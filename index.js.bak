@@ -1,0 +1,217 @@
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var xhr = new XMLHttpRequest();
+
+let xmlInfo = `<?xml version="1.0" encoding="UTF-8"?>
+<layout mode="MANUAL" src="UCS" seq="" res="LOW">
+    <chassis model="UCS5109" cfg="1" qty="1">
+        <power qty="4" />
+    </chassis>
+    <rack cfg="1" qty="1">
+        <device model="SPACE2" qty="1" />
+        <device model="PANDUIT2" qty="1" />
+        <device model="PANDUCT2" qty="1" />
+        <device model="PANTRAY1" qty="1" />
+    </rack>
+    <params ru="60" extra="0" face="FRONT" bezel="NO" fill="LINEAR" load="HIGH" panels="YES" format="PHOTO" size="LARGE" trans="NO" />
+</layout>`;
+
+//reqXML = new XMLHttpRequest();
+var url = "http://ucs4.us/ucs/engine/ucs-engine.cgi";
+xhr.open("POST", url, false);
+xhr.setRequestHeader("Content-Type", "text/xml");
+
+
+var parser = require('xml2json');
+
+
+// console.log("input -> %s", xmlInfo)
+
+// xml to json
+var json = parser.toJson(xmlInfo);
+// console.log("to json -> %s", json);
+
+// json to xml
+var xml = parser.toXml(json);
+// console.log("back to xml -> %s", xml)
+
+
+//var doc = parseXML(str)
+//var tag = doc.getElementsByTagName('foobar')[0]
+
+//console.log(tag.getAttribute('id'))
+
+
+
+
+/*
+xhr.send(dom);
+var headers = xhr.getAllResponseHeaders();
+console.log('Headers: ' + headers);
+xhr.responseType = 'text';
+console.log('Response: ' + xhr.response);
+xhr.onload = function () {
+    if (xhr.readyState === xhr.DONE) {
+        if (xhr.status === 302) {
+            console.log(xhr.response);
+            console.log(xhr.responseText);
+        }
+    }
+    
+};
+*/
+
+/*
+let xmls = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"\
+                            xmlns:web="http://www.webserviceX.NET/">\
+            <soapenv:Header/>\
+            <soapenv:Body>\
+              <web:ConversionRate>\
+                <web:FromCurrency>INR</web:FromCurrency>\
+                <web:ToCurrency>USD</web:ToCurrency>\
+              </web:ConversionRate>\
+            </soapenv:Body>\
+          </soapenv:Envelope>';
+*/
+/*
+var axios = require('axios');
+var filename = '';
+
+var FileReader = require('filereader'),
+    fileReader = new FileReader();
+
+fileReader.setNodeChunkedEncoding(true);
+//fileReader.readAsDataURL(new File('./files/my-file.txt'));
+*/
+
+
+
+
+const Fs = require('fs')
+const Path = require('path')
+const axios = require('axios')
+
+var filename;
+
+
+
+
+
+/* async function go() {
+    let response = axios.post('http://ucs4.us/ucs/engine/ucs-engine.cgi',
+        xml, {
+            headers: {
+                'Content-Type': 'text/xml'
+            }
+        }).then(res => {
+        // console.log(res);
+        filename = res.request;
+        //return filename.res.responseUrl;
+    }).catch(err => {
+        console.log(err)
+    });
+
+    let answer = await response;
+    return answer;
+}
+
+var urlpost = go();
+
+console.log("url: " + urlpost); */
+
+
+const xmlData = xml;
+
+
+/* 
+        const getCountries = (currencyCode) => {
+            return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response) => {
+                return response.data.map((country) => country.name);
+            });
+        }; */
+
+// PROMISES
+/* const returnedURL = (url, xmlData) => {
+    let imageURL;
+    return getResponseBack(url, xmlData).then((temp) => {
+        imageURL = temp;
+        return imageURL.res.response.res.responseUrl;
+    });
+}; */
+const getResponseBack = (url, xmlData) => {
+    return axios.post(url, xmlData, {
+        headers: {
+            'Content-Type': 'text/xml'
+        }
+    }).then((response) => {
+        filename = response.request;
+        return filename.res.responseUrl;
+    });
+};
+
+var fs = require('fs');
+
+const getImageBack = (conv) => {
+    return axios.get(conv, {
+            responseType: 'stream'
+        })
+        .then(function (response) {
+            console.log('gIBR: ' + response);
+            response.data.pipe(fs.createWriteStream('Hospital.jpg'));
+            
+        }).catch(err => {
+        console.log(err)
+        });
+}
+
+const convertCurrencyAlt = async (url, xmlData) => {
+    const imageURL = await getResponseBack(url, xmlData);
+    
+    return imageURL;
+};
+
+var output = '';
+
+/* convertCurrencyAlt(url, xmlData).then((status) => {
+    console.log('GCA: ' + status);
+}).then((stat) => {
+    return stat;
+}); */
+
+convertCurrencyAlt(url, xmlData).then((status) => {
+    console.log('GCA: ' + status);
+    return status
+}).then((stat) => {
+    console.log('Stat2: ' + stat)
+    getImageBack(stat);
+});
+
+console.log('output' + output);
+
+/* getImageBack('http://ucs4.us/ucs/engine/temp/ucs-layout-3320.jpg').then((status) => {
+    console.log('gIB: ' + status);
+}); */
+
+
+const path = Path.resolve(__dirname, 'images', 'code.jpg')
+
+/*
+    // axios image download with response type "stream"
+    const response =  Axios({
+        method: 'GET',
+        url: url,
+        responseType: 'stream'
+    })
+    
+    var imageurl = url;
+
+    axios.get(imageurl, {
+            responseType: 'arraybuffer'
+        })
+        .then(function (response) {
+            response.type('image/jpeg');
+            response.end(response.data, 'binary');
+        });
+
+
+    // pipe the result stream into a file on disc
+*/
