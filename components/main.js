@@ -3,8 +3,6 @@ const InputForm = {
     <div class="columns">
         <div class="column has-text-centered">
             <form @submit="submitForm">
-
-
                 <div class="field is-horizontal">
                     <div class="field-label">
                         <label class="label">Rack RUs:</label>

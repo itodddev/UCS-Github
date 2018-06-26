@@ -2,6 +2,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var xhr = new XMLHttpRequest();
 var parser = require('xml2json');
 const axios = require('axios');
+var fs = require('fs');
 
 let xmlInfo = `<?xml version="1.0" encoding="UTF-8"?>
 <layout mode="MANUAL" src="UCS" seq="" res="LOW">
@@ -28,8 +29,6 @@ var json = parser.toJson(xmlInfo);
 // convert json to xml
 var xml = parser.toXml(json);
 
-
-
 var filename;
 
 const xmlData = xml;
@@ -44,8 +43,6 @@ const getResponseBack = (url, xml) => {
         return filename.res.responseUrl;
     });
 };
-
-var fs = require('fs');
 
 const getImageBack = (conv) => {
     return axios.get(conv, {
