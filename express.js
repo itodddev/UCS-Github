@@ -51,13 +51,63 @@ app.get('/', (req, res, next) => {
 
 app.post('/xml', (req, res, next) => {
     res.end(JSON.stringify(req.body));
-    
-    
+
+
     var conv1 = parser.toJson(req.body.data);
     console.log('\n\nData recieved from website (JSON): ' + conv1);
     var conv2 = parser.toXml(conv1);
     console.log('\n\nData converted to XML in Node (XML): ' + conv2);
-    
+
+    var filename;
+
+
+    const getResponseBack = (url, xml) => {
+        return axios.post(url, xml, {
+            headers: {
+                'Content-Type': 'text/xml'
+            }
+        }).then((response) => {
+            filename = response.request;
+            return filename.res.responseUrl;
+        });
+    };
+
+    const getImageBack = (conv) => {
+        return axios.get(conv, {
+                responseType: 'stream'
+            })
+            .then(function (response) {
+                response.data.pipe(fs.createWriteStream('new.jpg'));
+
+            }).catch(err => {
+                console.log(err)
+            });
+    }
+
+    const convertCurrencyAlt = async (url, xmlData) => {
+        const imageURL = await getResponseBack(url, xmlData);
+
+        return imageURL;
+    };
+
+    /* convertCurrencyAlt(url, xmlData).then((status) => {
+        console.log('GCA: ' + status);
+    }).then((stat) => {
+        return stat;
+    }); */
+
+    convertCurrencyAlt(url, conv2).then((status) => {
+        return status
+    }).then((stat) => {
+        getImageBack(stat);
+    });
+
+
+
+
+
+
+
 });
 
 app.listen(3000, () => console.log('UCS Config listening on port 3000'));

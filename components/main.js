@@ -355,6 +355,9 @@ const InputForm = {
             indent: '   ',
             rackFooter: '</rack>',
             rackTag: '',
+            xmlHeader: '<?xml version="1.0" encoding="UTF-8"?>\n<layout mode = "MANUAL" src = "UCS" seq = "" res = "LOW" >\n',
+            xmlFooter: '</layout>',
+            finalXML: '',
         }
     },
     methods: {
@@ -362,6 +365,8 @@ const InputForm = {
             evt.preventDefault();
             this.build = '';
             this.rackTag= '';
+            this.finalXML = '';
+
             this.build = this.build + this.paramsStart + 'ru="' + this.ruSelection + '" extra="0" ';
 
             this.rackArray[0] = this.modA1;
@@ -408,10 +413,12 @@ const InputForm = {
             }
 
             this.build = this.build + ('/>');
-            console.log(this.build);
+            //console.log(this.build);
 
+            this.finalXML = this.finalXML + this.xmlHeader + this.rackTag + this.build + this.xmlFooter;
+            console.log(this.finalXML);
             var url= 'http://localhost:3000/xml'
-            axios.post(url, { data: this.rackTag}).then(function(response) {
+            axios.post(url, { data: this.finalXML}).then(function(response) {
                 //console.log('response: ' + response);
             });
         }
