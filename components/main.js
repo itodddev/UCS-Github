@@ -325,10 +325,9 @@ const InputForm = {
                                 <button class="button is-primary">
                                     Submit
                                 </button>
+                                <a href="http://localhost:3000/image" download="photo.jpg">  Image</a>
                             </div>
-                            <pre> {{ $data.build }}</pre>
-                            <br>
-                            <pre>{{ $data }}</pre>
+                            
                             
                         </div>
                     </div>
@@ -361,6 +360,15 @@ const InputForm = {
         }
     },
     methods: {
+
+        getImage() {
+
+            var url = 'http://localhost:3000/image'
+            axios.get(url).then(function (response) {
+                //console.log(response);
+                response.sendFile(response.data);
+            });
+        },
         submitForm(evt) {
             evt.preventDefault();
             this.build = '';
