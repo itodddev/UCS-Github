@@ -131,10 +131,63 @@
 </template>
 
 <script>
+export default {
+  name: 'Parameters',
+  data() {
+    return {
+      ruSelection: 42,
+      rackFace: "FRONT",
+      frontBezel: "YES",
+      rackLoad: "HIGH",
+      panels: "YES",
+      paramsString: "",
+      paramsStart: "<params ",
+      paramsEnd: " />"
+    };
+  },
+  computed: {
+    buildParameters() {
+      this.paramsString =
+        this.paramsString +
+        this.paramsStart +
+        'ru="' +
+        this.ruSelection +
+        '" extra="0" ';
 
-    export default {
-        
+      if (this.rackFace === "FRONT") {
+        this.paramsString = this.paramsString + 'face="FRONT" ';
+      } else if (this.rackFace === "REAR") {
+        this.paramsString = this.paramsString + 'face="REAR" ';
+      } else if (this.rackFace === "PERSPECTIVE") {
+        this.paramsString = this.paramsString + 'face="PERSPECTIVE" ';
+      }
+
+      if (this.frontBezel === "YES") {
+        this.paramsString = this.paramsString + 'bezel="YES" ';
+      } else if (this.frontBezel === "NO") {
+        this.paramsString = this.paramsString + 'bezel="NO" ';
+      }
+
+      if (this.rackLoad === "HIGH") {
+        this.paramsString = this.paramsString + 'load="HIGH" ';
+      } else if (this.rackLoad === "LOW") {
+        this.paramsString = this.paramsString + 'load="LOW" ';
+      } else if (this.rackLoad === "NO") {
+        this.paramsString = this.paramsString + 'load="NO" ';
+      }
+
+      if (this.panels === "YES") {
+        this.paramsString = this.paramsString + 'panels="YES" ';
+      } else if (this.panels === "NO") {
+        this.paramsString = this.paramsString + 'panels="NO" ';
+      }
+
+      this.paramsString = this.paramsString + this.paramsEnd;
+
+      return this.paramsString;
     }
+  }
+};
 </script>
 
 <style scoped>

@@ -33,7 +33,7 @@ app.get('/image', (req, res) => {
     var options = {
         root: __dirname + '/',
     };
-    var path = __dirname +'/'+'new.jpg';
+    var path = __dirname + '/' + 'new.jpg';
     res.header("Content-Disposition", "attachment; filename=photo.jpg");
     res.download(path);
 });
@@ -41,14 +41,16 @@ app.get('/image', (req, res) => {
 app.post('/xml', (req, res, next) => {
     res.end(JSON.stringify(req.body));
 
-    
+    console.log(res);
+    console.log(req);
+
     var conv1 = parser.toJson(req.body.data);
     console.log('\n\nData recieved from website (JSON): ' + conv1);
     var conv2 = parser.toXml(conv1);
     console.log('\n\nData converted to XML in Node (XML): ' + conv2);
-    
 
-    
+
+
     var filename;
     const getResponseBack = (url, xml) => {
         return axios.post(url, xml, {
