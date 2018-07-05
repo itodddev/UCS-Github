@@ -14,7 +14,8 @@ app.use(bodyParser.json());
 
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var xhr = new XMLHttpRequest();
-var parser = require('xml2json');
+//var parser = require('xml2json');
+var parser = require("xml-js");
 // var json2xml = require('node-json2xml');
 const axios = require('axios');
 var fs = require('fs');
@@ -44,9 +45,19 @@ app.post('/xml', (req, res, next) => {
     console.log(res);
     console.log(req);
 
-    var conv1 = parser.toJson(req.body.data);
+    // var conv1 = parser.toJson(req.body.data);
+    var options = {
+        compact: true,
+        ignoreComment: true,
+        spaces: 4
+    };
+
+    var conv1 = parser.xml2json(req.body.data, options);
+
     console.log('\n\nData recieved from website (JSON): ' + conv1);
-    var conv2 = parser.toXml(conv1);
+    // var conv2 = parser.toXml(conv1);
+    var conv2 = parser.json2xml(conv1, options);
+
     console.log('\n\nData converted to XML in Node (XML): ' + conv2);
 
 
